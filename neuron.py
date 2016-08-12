@@ -13,16 +13,20 @@ import logging
 class Neuron(object):
     """
     Processing and training functionality for a single neuron.
-
+    Parameters initiate as 1
     TODO: Add training functionality.
-    TDOO: Add parameters.
+    TDOO: Add parameters. DONE?
     """
-    def __init__(self, name="unnamed neuron"):
+    def __init__(self, paramnum, name="unnamed neuron"):
         self.log = logging.getLogger()
         self.value = None
         self.name = name
-        self.params = None
-        self.log.info("Initializing new Neuron: " + self.name)
+        self.paramnum = paramnum
+        self.params = []
+        for x in range(self.paramnum):
+            self.params.append(1)
+        self.log.info("Initializing new Neuron " + self.name + " with parameters:")
+        self.log.info(self.params)
 
     def process(self, trigger):
         """
@@ -30,7 +34,11 @@ class Neuron(object):
         """
         # Modify to set value based on triggers
         self.log.info("Processing neuron: '" + self.name + "' with trigger: " + str(trigger))
-        self.value = 0
+        self.precalc = 0
+        if len(self.params) == len(trigger):
+            for x,y in zip(self.params, triger): #zip should be replased when lists get long
+                self.precalc = self.precalc + x*y
+        self.output = self.precalc
         return self.output()
 
     def output(self):
@@ -109,13 +117,13 @@ if __name__ == '__main__':
     # Create a new neural net
     L1 = Layer(
         name="Layer 1",
-        neurons=[Neuron(name="Neuron " + str(x)) for x in range(1)])
+        neurons=[Neuron(3, name="Neuron " + str(x)) for x in range(1)])
     L2 = Layer(
         name="Layer 2", register=L1,
-        neurons=[Neuron(name="Neuron " + str(x)) for x in range(2)])
+        neurons=[Neuron(2, name="Neuron " + str(x)) for x in range(2)])
     L3 = Layer(
         name="Layer 3", register=L2,
-        neurons=[Neuron(name="Neuron " + str(x)) for x in range(3)])
+        neurons=[Neuron(1, name="Neuron " + str(x)) for x in range(3)])
 
     # Processing information through the neural net:
     L1.process([1])
